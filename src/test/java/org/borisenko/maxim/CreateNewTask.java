@@ -2,6 +2,7 @@ package org.borisenko.maxim;
 
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import org.apache.http.HttpStatus;
 import org.borisenko.maxim.model.TaskResponse;
 import org.borisenko.maxim.model.TaskRequest;
 import org.testng.annotations.DataProvider;
@@ -38,7 +39,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .body("id",not(empty()))
                 .body("url",not(empty()))
                 .body("content",equalTo(taskName))
@@ -55,7 +56,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(equalTo("Bad Request\n"));
     }
     @Test(description = "Задача не может быть создана без названия")
@@ -67,7 +68,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(equalTo("Empty content\n"));
     }
     @Test(description = "Задача не может быть создана c пустым названием")
@@ -79,7 +80,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(equalTo("Empty content\n"));
     }
 
@@ -99,7 +100,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .body("id",not(empty()))
                 .body("content",equalTo(taskName))
                 .body("project_id", is(projectId)) ;
@@ -122,7 +123,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .body("id",not(empty()))
                 .body("content",equalTo(taskName))
                 .body("project_id", is(projectId))
@@ -140,7 +141,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .as(TaskResponse.class);
         String taskName=getTaskName();
@@ -150,7 +151,7 @@ public class CreateNewTask extends BaseTest{
                 .when()
                 .post("/tasks")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .body("content",equalTo(taskName))
                 .body("parent",is(parentTask.getId()));
         deleteTestTask(parentTask.getId());
@@ -167,7 +168,7 @@ public class CreateNewTask extends BaseTest{
                         .when()
                         .post("/tasks")
                         .then()
-                        .statusCode(200)
+                        .statusCode(HttpStatus.SC_OK)
                         .assertThat()
                         .body("content",equalTo(taskName))
                         .body("order",is(2))
@@ -187,7 +188,7 @@ public class CreateNewTask extends BaseTest{
                         .post("/tasks")
                         .then()
                         .assertThat()
-                        .statusCode(200)
+                        .statusCode(HttpStatus.SC_OK)
                         .body("content",equalTo(taskName))
                         .body("priority",is(2))
                         .extract()
@@ -207,7 +208,7 @@ public class CreateNewTask extends BaseTest{
                         .post("/tasks")
                         .then()
                         .assertThat()
-                        .statusCode(200)
+                        .statusCode(HttpStatus.SC_OK)
                         .body("content",equalTo(taskName))
                         .body("due.string",equalTo(tomorrow))
                         .extract()
@@ -227,7 +228,7 @@ public class CreateNewTask extends BaseTest{
                         .post("/tasks")
                         .then()
                         .assertThat()
-                        .statusCode(200)
+                        .statusCode(HttpStatus.SC_OK)
                         .body("content",equalTo(taskName))
                         .body("due.date",equalTo(date))
                         .extract()
@@ -248,7 +249,7 @@ public class CreateNewTask extends BaseTest{
                         .post("/tasks")
                         .then()
                         .assertThat()
-                        .statusCode(200)
+                        .statusCode(HttpStatus.SC_OK)
                         .body("content",equalTo(taskName))
                         .body("due.datetime",equalTo(date))
                         .extract()
@@ -266,7 +267,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(equalTo("Bad Request\n"));
 
     }
@@ -280,7 +281,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(equalTo("due_date not in YYYY-MM-DD format\n"));
     }
 
@@ -293,7 +294,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(equalTo("Date is invalid\n"));
     }
 
@@ -310,7 +311,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(500)
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .body(equalTo("Internal Server Error\n"));
     }
 
@@ -325,7 +326,7 @@ public class CreateNewTask extends BaseTest{
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(containsString("JSON decode error:"));
     }
 }

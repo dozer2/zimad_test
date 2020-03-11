@@ -10,6 +10,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.apache.http.HttpStatus;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 
@@ -76,7 +77,7 @@ public abstract class BaseTest {
                 .when()
                 .post("/projects")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .response().as(new TypeRef<Map<String, Object>>() {});
         return (Long)projects.get("id");
@@ -88,7 +89,7 @@ public abstract class BaseTest {
                         .when()
                         .delete("/projects/{projectId}")
                         .then()
-                        .statusCode(204);
+                        .statusCode(HttpStatus.SC_NO_CONTENT);
 
     }
 
@@ -101,7 +102,7 @@ public abstract class BaseTest {
                         .when()
                         .post("/sections")
                         .then()
-                        .statusCode(200)
+                        .statusCode(HttpStatus.SC_OK)
                         .extract()
                         .response().as(new TypeRef<Map<String, Object>>() {});
         return  (Integer)projects.get("id");
@@ -113,7 +114,7 @@ public abstract class BaseTest {
                 .when()
                 .delete("/sections/{sectionId}")
                 .then()
-                .statusCode(204);
+                .statusCode(HttpStatus.SC_NO_CONTENT);
 
     }
 
@@ -124,7 +125,7 @@ public abstract class BaseTest {
                 .when()
                 .delete("/tasks/{taskId}")
                 .then()
-                .statusCode(204);
+                .statusCode(HttpStatus.SC_NO_CONTENT);
 
     }
 
