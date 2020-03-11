@@ -47,19 +47,42 @@ public class CreateNewTask extends BaseTest{
         deleteTestTask(newTask.getId());
     }
 
-    @Test(description = "Задача не может быть создана без названия")
-    public void taskNotMustBeCreatedWithoutContent(){
-        String result=given()
+    @Test(description = "Задача не может быть создана c пустым телом запроса")
+    public void taskNotMustBeCreatedWithEmptyBody(){
+          given()
                 .spec(getSpecification())
                 .when()
                 .post("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(400)
-                .extract()
-                .asString();
-        assertThat("Error! Task created without content",result,equalTo("Bad Request\n"));
+                .body(equalTo("Bad Request\n"));
     }
+    @Test(description = "Задача не может быть создана без названия")
+    public void taskNotMustBeCreatedWithoutContent(){
+        given()
+                .spec(getSpecification())
+                .body("{\"order\" : 5}")
+                .when()
+                .post("/tasks")
+                .then()
+                .assertThat()
+                .statusCode(400)
+                .body(equalTo("Empty content\n"));
+    }
+    @Test(description = "Задача не может быть создана c пустым названием")
+    public void taskNotMustBeCreatedWithEmptyContent(){
+        given()
+                .spec(getSpecification())
+                .body(new TaskRequest())
+                .when()
+                .post("/tasks")
+                .then()
+                .assertThat()
+                .statusCode(400)
+                .body(equalTo("Empty content\n"));
+    }
+
 
 
     @Test(description = "Задача может быть связана с проектом")
@@ -236,7 +259,7 @@ public class CreateNewTask extends BaseTest{
     public void taskNotMustBeCreatedWithWrongDateTime(){
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String date= dateFormatter.format(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
-        String result=given()
+        given()
                 .spec(getSpecification())
                 .body(new TaskRequest().setContent(getTaskName()).setDue_datetime(date))
                 .when()
@@ -244,14 +267,13 @@ public class CreateNewTask extends BaseTest{
                 .then()
                 .assertThat()
                 .statusCode(400)
-                .extract()
-                .asString();
-        assertThat("Error! Task created with wrong datetime",result,equalTo("Bad Request\n"));
+                .body(equalTo("Bad Request\n"));
+
     }
 
     @Test (description = "Дата задачи не может быть установлена в формате отличном от ГГГГ-ММ-ДД")
     public void taskNotMustBeCreatedWithWrongDateFormat(){
-        String result=given()
+        given()
                 .spec(getSpecification())
                 .body(new TaskRequest().setContent(getTaskName()).setDue_date("11-11-11"))
                 .when()
@@ -259,14 +281,12 @@ public class CreateNewTask extends BaseTest{
                 .then()
                 .assertThat()
                 .statusCode(400)
-                .extract()
-                .asString();
-        assertThat("Error! Task created with wrong date format",result,equalTo("due_date not in YYYY-MM-DD format\n"));
+                .body(equalTo("due_date not in YYYY-MM-DD format\n"));
     }
 
     @Test (description = "Дата задачи не может быть установлена несовместимым типом данных ")
     public void taskNotMustBeCreatedWithInvalidDate(){
-        String result=given()
+                given()
                 .spec(getSpecification())
                 .body(new TaskRequest().setContent(getTaskName()).setDue_string("date"))
                 .when()
@@ -274,9 +294,7 @@ public class CreateNewTask extends BaseTest{
                 .then()
                 .assertThat()
                 .statusCode(400)
-                .extract()
-                .asString();
-        assertThat("Error! Task created with invalid date ",result,equalTo("Date is invalid\n"));
+                .body(equalTo("Date is invalid\n"));
     }
 
     @Test (description = "Задача не может быть связана с несуществующим проектом")
@@ -285,7 +303,7 @@ public class CreateNewTask extends BaseTest{
         TaskRequest taskBody = new TaskRequest()
                 .setContent(taskName)
                 .setProject_id(12345678L);
-        String result=given()
+        given()
                 .spec(getSpecification())
                 .body(taskBody)
                 .when()
@@ -293,26 +311,21 @@ public class CreateNewTask extends BaseTest{
                 .then()
                 .assertThat()
                 .statusCode(500)
-                .extract()
-                .asString();
-        assertThat("Error! Task linked with fake project ",result,equalTo("Internal Server Error\n"));
+                .body(equalTo("Internal Server Error\n"));
     }
 
 
     @Test(dataProvider = "fields",description = "Задача не должна создаваться с некоррекным типом полей входных данных")
     public void taskCanNotCreateWithUnsupportedTypeParams(String field)
     {
-        String taskName=getTaskName();
-        String result=given()
+        given()
                 .spec(getSpecification())
-                .body("{ \"content\" : \""+taskName+"\" , \""+field+"\" : \"wrong\" }" )
+                .body("{ \"content\" : \""+getTaskName()+"\" , \""+field+"\" : \"wrong\" }" )
                 .when()
                 .post("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(400)
-                .extract()
-                .asString();
-        assertThat("Error! JSON wrong. ",result,containsString("JSON decode error:"));
+                .body(containsString("JSON decode error:"));
     }
 }
