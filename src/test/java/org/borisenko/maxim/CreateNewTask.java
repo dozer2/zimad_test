@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.empty;
 
 @Story("Создание задачи")
 @Feature("Создание задачи")
-public class CreateNewTaskResponse extends BaseTest{
+public class CreateNewTask extends BaseTest{
 
     @DataProvider(name = "fields")
     public static Object[][] fields() {
