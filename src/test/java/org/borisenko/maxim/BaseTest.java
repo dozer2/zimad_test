@@ -42,7 +42,7 @@ public abstract class BaseTest {
             printStream.set(new PrintStream(writer.get(), true));
             specification.set(
                     new RequestSpecBuilder()
-                            .setBaseUri("https://api.todoist.com/rest/v1")
+                            .setBaseUri(configuration.getBasePath())
                             .setContentType(ContentType.JSON)
                             .addHeader("Authorization", "Bearer ".concat(configuration.getAuthorizationKey()))
                             .setConfig(RestAssured
