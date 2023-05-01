@@ -12,7 +12,7 @@
     <properties>
         <rest.assured>4.2.0</rest.assured>
         <json.path>4.2.0</json.path>
-        <testng>7.1.0</testng>
+        <testng>7.7.0</testng>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <aspectj.version>1.8.10</aspectj.version>
         <properties.version>2.0.RC6</properties.version>
